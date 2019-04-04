@@ -7,61 +7,73 @@ Prototype Refactor
 2. Your goal is to refactor all of this code to use ES6 Classes. The console.log() statements should still return what is expected of them.
 
 */
-/*
-  === GameObject ===
-  * createdAt
-  * dimensions (These represent the character's size in the video game)
-  * destroy() // prototype method -> returns the string: 'Object was removed from the game.'
-*/
 
-function GameObject(player) {
-  this.createdAt = player.createdAt;
-  this.dimensions = player.dimensions;
+// function GameObject(player) {
+//   this.createdAt = player.createdAt;
+//   this.dimensions = player.dimensions;
+// }
+
+// GameObject.prototype.destroy = function() {
+//   return `${this.name} was removed from the game.`;
+// };
+
+class GameObject {
+  constructor(player) {
+    this.createdAt = player.createdAt;
+    this.dimensions = player.dimensions;
+  }
+  destroy() {
+    return `${this.name} was removed from the game.`;
+  }
 }
 
-GameObject.prototype.destroy = function() {
-  return `${this.name} was removed from the game.`;
-};
+// function CharacterStats(player) {
+//   GameObject.call(this, player);
+//   this.healthPoints = player.healthPoints;
+//   this.name = player.name;
+// }
 
-/*
-  === CharacterStats ===
-  * healthPoints
-  * name
-  * takeDamage() // prototype method -> returns the string '<object name> took damage.'
-  * should inherit destroy() from GameObject's prototype
-*/
+// CharacterStats.prototype = Object.create(GameObject.prototype);
+// CharacterStats.prototype.takeDamage = function() {
+//   return `${this.name} took damage`;
+// };
 
-function CharacterStats(player) {
-  GameObject.call(this, player);
-  this.healthPoints = player.healthPoints;
-  this.name = player.name;
+class CharacterStats extends GameObject {
+  constructor(player) {
+    // GameObject.call(this, player);
+    super(player);
+    this.healthPoints = player.healthPoints;
+    this.name = player.name;
+  }
+  takeDamage() {
+    return `${this.name} took damage`;
+  }
 }
 
-CharacterStats.prototype = Object.create(GameObject.prototype);
-CharacterStats.prototype.takeDamage = function() {
-  return `${this.name} took damage`;
-};
+// function Humanoid(attributes) {
+//   CharacterStats.call(this, attributes);
+//   this.team = attributes.team;
+//   this.weapons = attributes.weapons;
+//   this.language = attributes.language;
+// }
 
-// === Humanoid (Having an appearance or character resembling that of a human.) ===
-// * team
-// * weapons
-// * language
-// * greet() // prototype method -> returns the string '<object name> offers a greeting in <object language>.'
-// * should inherit destroy() from GameObject through CharacterStats
-// * should inherit takeDamage() from CharacterStats
+// Humanoid.prototype = Object.create(CharacterStats.prototype);
 
-function Humanoid(attributes) {
-  CharacterStats.call(this, attributes);
-  this.team = attributes.team;
-  this.weapons = attributes.weapons;
-  this.language = attributes.language;
+// Humanoid.prototype.greet = function() {
+//   return `${this.name} offers a greeting in ${this.language}`;
+// };
+
+class Humanoid extends CharacterStats {
+  constructor(player) {
+    super(player);
+    this.team = player.team;
+    this.weapons = player.weapons;
+    this.language = player.language;
+  }
+  greet() {
+    return `${this.name} offers a greeting in ${this.language}`;
+  }
 }
-
-Humanoid.prototype = Object.create(CharacterStats.prototype);
-
-Humanoid.prototype.greet = function() {
-  return `${this.name} offers a greeting in ${this.language}`;
-};
 
 /*
  * Inheritance chain: GameObject -> CharacterStats -> Humanoid
@@ -123,8 +135,3 @@ console.log(archer.language); // Elvish
 console.log(archer.greet()); // Lilith offers a greeting in Elvish.
 console.log(mage.takeDamage()); // Bruce took damage.
 console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-
-// Stretch task:
-// * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.
-// * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
-// * Create two new objects, one a villain and one a hero and fight it out with methods!
